@@ -223,9 +223,7 @@ end
 
 function readuntil(s::IO, delim::Char)
     if delim < Char(0x80)
-        data = readuntil(s, delim%UInt8)
-        enc = byte_string_classify(data)
-        return (enc==1) ? ASCIIString(data) : UTF8String(data)
+        return UTF8String(readuntil(s, delim % UInt8))
     end
     out = IOBuffer()
     while !eof(s)
@@ -315,10 +313,7 @@ function readbytes(s::IO, nb=typemax(Int))
     resize!(b, nr)
 end
 
-function readall(s::IO)
-    b = readbytes(s)
-    return isvalid(ASCIIString, b) ? ASCIIString(b) : UTF8String(b)
-end
+readall(s::IO) = UTF8String(readbytes(s))
 readall(filename::AbstractString) = open(readall, filename)
 
 ## high-level iterator interfaces ##

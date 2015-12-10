@@ -125,12 +125,6 @@ end
 @test [parse(Float32,x) for x in split("0,1\n",",")][2] == 1.0
 @test_throws ArgumentError parse(Float32,split("0,1 X\n",",")[2])
 
-#more ascii tests
-@test convert(ASCIIString, UInt8[32,107,75], "*") == " kK"
-@test convert(ASCIIString, UInt8[132,107,75], "*") == "*kK"
-@test convert(ASCIIString, UInt8[], "*") == ""
-@test convert(ASCIIString, UInt8[255], "*") == "*"
-
 @test ucfirst("Hola")=="Hola"
 @test ucfirst("hola")=="Hola"
 @test ucfirst("")==""
@@ -217,7 +211,7 @@ s = "abcdefghij"
 sp = pointer(s)
 @test ascii(sp) == s
 @test ascii(sp,5) == "abcde"
-@test typeof(ascii(sp)) == ASCIIString
+@test typeof(ascii(sp)) == UTF8String
 @test typeof(utf8(sp)) == UTF8String
 s = "abcde\uff\u2000\U1f596"
 sp = pointer(s)
@@ -281,11 +275,6 @@ c[1] = 'A'
 @test isvalid(utf32("a")) == true
 @test isvalid(utf32("\x00")) == true
 @test isvalid(UTF32String, UInt32[0xd800,0]) == false
-
-# Issue #11241
-
-@test isvalid(ASCIIString, "is_valid_ascii") == true
-@test isvalid(ASCIIString, "Σ_not_valid_ascii") == false
 
 # test all edge conditions
 for (val, pass) in (
@@ -355,7 +344,6 @@ for (val, pass) in (
 end
 
 # Issue #11203
-@test isvalid(ASCIIString,UInt8[]) == true
 @test isvalid(UTF8String, UInt8[]) == true
 @test isvalid(UTF16String,UInt16[]) == true
 @test isvalid(UTF32String,UInt32[]) == true
@@ -441,7 +429,6 @@ let s = "abcdef", u8 = "abcdef\uff", u16 = utf16(u8), u32 = utf32(u8),
     @test isvalid(u8)
     @test isvalid(u16)
     @test isvalid(u32)
-    @test isvalid(ASCIIString, s)
     @test isvalid(UTF8String,  u8)
     @test isvalid(UTF16String, u16)
     @test isvalid(UTF32String, u32)

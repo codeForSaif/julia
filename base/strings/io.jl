@@ -261,7 +261,7 @@ Removes leading indentation from string
 
 Returns:
 
-* `ASCIIString` or `UTF8String` of multiline string, with leading indentation of `indent` removed
+* `UTF8String` of multiline string, with leading indentation of `indent` removed
 """
 function unindent(str::AbstractString, indent::Int; tabwidth=8)
     indent == 0 && return str
