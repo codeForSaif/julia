@@ -214,9 +214,9 @@ let exename = `$(joinpath(JULIA_HOME, Base.julia_exename())) --precompiled=yes`
                 println(io, "println(ARGS)")
                 println(io, "exit(0)")
             end
-            @test readchomp(`$exename $testfile foo -bar --baz`) ==  "UTF8String[\"foo\",\"-bar\",\"--baz\"]"
-            @test readchomp(`$exename $testfile -- foo -bar --baz`) ==  "UTF8String[\"foo\",\"-bar\",\"--baz\"]"
-            @test readchomp(`$exename -L $testfile -- foo -bar --baz`) ==  "UTF8String[\"foo\",\"-bar\",\"--baz\"]"
+            @test readchomp(`$exename $testfile foo -bar --baz`) ==  "String[\"foo\",\"-bar\",\"--baz\"]"
+            @test readchomp(`$exename $testfile -- foo -bar --baz`) ==  "String[\"foo\",\"-bar\",\"--baz\"]"
+            @test readchomp(`$exename -L $testfile -- foo -bar --baz`) ==  "String[\"foo\",\"-bar\",\"--baz\"]"
             @test !success(`$exename --foo $testfile`)
             @test !success(`$exename -L $testfile -- foo -bar -- baz`)
         finally
@@ -225,7 +225,7 @@ let exename = `$(joinpath(JULIA_HOME, Base.julia_exename())) --precompiled=yes`
     end
 
     # issue #10562
-    @test readchomp(`$exename -e 'println(ARGS);' ''`) == "UTF8String[\"\"]"
+    @test readchomp(`$exename -e 'println(ARGS);' ''`) == "String[\"\"]"
 
     # issue #12679
     extrapath = @windows? joinpath(JULIA_HOME,"..","Git","usr","bin")*";" : ""

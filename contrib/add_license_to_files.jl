@@ -73,7 +73,7 @@ const old_license = ""
 
 
 function check_lines!(path::AbstractString, lines::Vector, checktxt::AbstractString,
-                                                 prefix::ASCIIString, oldcheck::Bool)
+                                                 prefix::String, oldcheck::Bool)
     remove = []
     for i in 1:length(lines)
         line = lines[i]

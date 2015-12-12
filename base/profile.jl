@@ -133,7 +133,7 @@ profile buffer is used.
 """
 function callers end
 
-function callers(funcname::ByteString, bt::Vector{UInt}, lidict; filename = nothing, linerange = nothing)
+function callers(funcname::String, bt::Vector{UInt}, lidict; filename = nothing, linerange = nothing)
     if filename === nothing && linerange === nothing
         return callersf(li -> li.func == funcname, bt, lidict)
     end
@@ -145,7 +145,7 @@ function callers(funcname::ByteString, bt::Vector{UInt}, lidict; filename = noth
     end
 end
 
-callers(funcname::ByteString; kwargs...) = callers(funcname, retrieve()...; kwargs...)
+callers(funcname::String; kwargs...) = callers(funcname, retrieve()...; kwargs...)
 callers(func::Function, bt::Vector{UInt}, lidict; kwargs...) = callers(string(func), bt, lidict; kwargs...)
 callers(func::Function; kwargs...) = callers(string(func), retrieve()...; kwargs...)
 
@@ -170,10 +170,10 @@ clear_malloc_data() = ccall(:jl_clear_malloc_data, Void, ())
 #### Internal interface
 ####
 immutable LineInfo
-    func::ByteString
-    file::ByteString
+    func::String
+    file::String
     line::Int
-    inlined_file::ByteString
+    inlined_file::String
     inlined_line::Int
     fromC::Bool
     ip::Int64 # large enough that this struct can be losslessly read on any machine (32 or 64 bit)
@@ -380,7 +380,7 @@ function tree_format(lilist::Vector{LineInfo}, counts::Vector{Int}, level::Int, 
     ntext = cols-nindent-ndigcounts-ndigline-5
     widthfile = floor(Integer,0.4ntext)
     widthfunc = floor(Integer,0.6ntext)
-    strs = Array(ByteString, length(lilist))
+    strs = Array(String, length(lilist))
     showextra = false
     if level > nindent
         nextra = level-nindent
@@ -540,7 +540,7 @@ function callersf(matchfunc::Function, bt::Vector{UInt}, lidict)
 end
 
 # Utilities
-function truncto(str::ByteString, w::Int)
+function truncto(str::String, w::Int)
     ret = str;
     if length(str) > w
         ret = string("...", str[end-w+4:end])
@@ -550,7 +550,7 @@ end
 
 # Order alphabetically (file, function) and then by line number
 function liperm(lilist::Vector{LineInfo})
-    comb = Array(ByteString, length(lilist))
+    comb = Array(String, length(lilist))
     for i = 1:length(lilist)
         li = lilist[i]
         if li != UNKNOWN

@@ -45,7 +45,7 @@ end
 isabspath(path::AbstractString) = ismatch(path_absolute_re, path)
 isdirpath(path::AbstractString) = ismatch(path_directory_re, splitdrive(path)[2])
 
-function splitdir(path::ByteString)
+function splitdir(path::String)
     a, b = splitdrive(path)
     m = match(path_dir_splitter,b)
     m === nothing && return (a,b)

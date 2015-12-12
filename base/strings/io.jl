@@ -70,7 +70,7 @@ print(io::IO, s::AbstractString) = (write(io, s); nothing)
 write(io::IO, s::AbstractString) = (len = 0; for c in s; len += write(io, c); end; len)
 show(io::IO, s::AbstractString) = print_quoted(io, s)
 
-write{T<:ByteString}(to::AbstractIOBuffer, s::SubString{T}) =
+write{T<:String}(to::AbstractIOBuffer, s::SubString{T}) =
     s.endof==0 ? 0 : write_sub(to, s.string.data, s.offset + 1, nextind(s, s.endof) - 1)
 
 ## printing literal quoted string data ##
@@ -90,8 +90,8 @@ function repr(x)
 end
 
 # IOBuffer views of a (byte)string:
-IOBuffer(str::ByteString) = IOBuffer(str.data)
-IOBuffer{T<:ByteString}(s::SubString{T}) = IOBuffer(sub(s.string.data, s.offset + 1 : s.offset + sizeof(s)))
+IOBuffer(str::String) = IOBuffer(str.data)
+IOBuffer{T<:String}(s::SubString{T}) = IOBuffer(sub(s.string.data, s.offset + 1 : s.offset + sizeof(s)))
 
 # join is implemented using IO
 function print_joined(io, strings, delim, last)
@@ -261,7 +261,7 @@ Removes leading indentation from string
 
 Returns:
 
-* `UTF8String` of multiline string, with leading indentation of `indent` removed
+* `String` of multiline string, with leading indentation of `indent` removed
 """
 function unindent(str::AbstractString, indent::Int; tabwidth=8)
     indent == 0 && return str

@@ -135,7 +135,7 @@ function syntax_deprecation_warnings(f::Function, warn::Bool)
     end
 end
 
-function parse_input_line(s::ByteString)
+function parse_input_line(s::String)
     # (expr, pos) = parse(s, 1)
     # (ex, pos) = ccall(:jl_parse_string, Any,
     #                   (Ptr{UInt8},Csize_t,Int32,Int32),
@@ -177,7 +177,7 @@ end
 # try to include() a file, ignoring if not found
 try_include(path::AbstractString) = isfile(path) && include(path)
 
-function process_options(opts::JLOptions, args::Vector{UTF8String})
+function process_options(opts::JLOptions, args::Vector{String})
     if !isempty(args)
         arg = first(args)
         idxs = find(x -> x == "--", args)

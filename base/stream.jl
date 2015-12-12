@@ -396,7 +396,7 @@ function iosize(io::TTY)
     @windows_only if ispty(io)
         # io is actually a libuv pipe but a cygwin/msys2 pty
         try
-            h, w = map(x -> parse(Int, x), split(readall(open(Base.Cmd(ByteString["stty", "size"]), "r", io)[1])))
+            h, w = map(x -> parse(Int, x), split(readall(open(Base.Cmd(String["stty", "size"]), "r", io)[1])))
             h > 0 || (h = default_size[1])
             w > 0 || (w = default_size[2])
             return h, w

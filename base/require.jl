@@ -26,9 +26,9 @@ find_in_node1_path(name) = myid()==1 ?
     find_in_path(name) : remotecall_fetch(find_in_path, 1, name)
 
 # Store list of files and their load time
-package_list = (ByteString=>Float64)[]
+package_list = (String=>Float64)[]
 # to synchronize multiple tasks trying to require something
-package_locks = (ByteString=>Any)[]
+package_locks = (String=>Any)[]
 
 # only broadcast top-level (not nested) requires and reloads
 toplevel_load = true
@@ -36,7 +36,7 @@ toplevel_load = true
 require(fname::AbstractString) = require(bytestring(fname))
 require(f::AbstractString, fs::AbstractString...) = (require(f); for x in fs require(x); end)
 
-function require(name::ByteString)
+function require(name::String)
     path = find_in_node1_path(name)
     path == nothing && error("$name not found")
 

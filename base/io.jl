@@ -223,7 +223,7 @@ end
 
 function readuntil(s::IO, delim::Char)
     if delim < Char(0x80)
-        return UTF8String(readuntil(s, delim % UInt8))
+        return String(readuntil(s, delim % UInt8))
     end
     out = IOBuffer()
     while !eof(s)
@@ -313,7 +313,7 @@ function readbytes(s::IO, nb=typemax(Int))
     resize!(b, nr)
 end
 
-readall(s::IO) = UTF8String(readbytes(s))
+readall(s::IO) = String(readbytes(s))
 readall(filename::AbstractString) = open(readall, filename)
 
 ## high-level iterator interfaces ##
@@ -335,7 +335,7 @@ function done(itr::EachLine, nada)
     true
 end
 next(itr::EachLine, nada) = (readline(itr.stream), nothing)
-eltype(::Type{EachLine}) = ByteString
+eltype(::Type{EachLine}) = String
 
 readlines(s=STDIN) = collect(eachline(s))
 

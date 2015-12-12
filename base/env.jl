@@ -71,10 +71,10 @@ end
 
 ## ENV: hash interface ##
 
-type EnvHash <: Associative{ByteString,ByteString}; end
+type EnvHash <: Associative{String,String}; end
 const ENV = EnvHash()
 
-similar(::EnvHash) = Dict{ByteString,ByteString}()
+similar(::EnvHash) = Dict{String,String}()
 
 getindex(::EnvHash, k::AbstractString) = @accessEnv k throw(KeyError(k))
 get(::EnvHash, k::AbstractString, def) = @accessEnv k (return def)
@@ -102,12 +102,12 @@ function next(::EnvHash, i)
     if env === nothing
         throw(BoundsError())
     end
-    env::ByteString
+    env::String
     m = match(r"^(.*?)=(.*)$"s, env)
     if m === nothing
         error("malformed environment entry: $env")
     end
-    (Pair{ByteString,ByteString}(m.captures[1], m.captures[2]), i+1)
+    (Pair{String,String}(m.captures[1], m.captures[2]), i+1)
 end
 end
 
@@ -131,7 +131,7 @@ function next(hash::EnvHash, block::Tuple{Ptr{UInt16},Ptr{UInt16}})
     if m === nothing
         error("malformed environment entry: $env")
     end
-    (Pair{ByteString,ByteString}(m.captures[1], m.captures[2]), (pos+len*2, blk))
+    (Pair{String,String}(m.captures[1], m.captures[2]), (pos+len*2, blk))
 end
 end
 

@@ -97,7 +97,7 @@ requested conversion:
 .. doctest::
 
     julia> convert(AbstractFloat, "foo")
-    ERROR: MethodError: `convert` has no method matching convert(::Type{AbstractFloat}, ::ASCIIString)
+    ERROR: MethodError: `convert` has no method matching convert(::Type{AbstractFloat}, ::String)
     This may have arisen from a call to the constructor AbstractFloat(...),
     since type constructors fall back to convert methods.
     Closest candidates are:
