@@ -102,8 +102,8 @@ JL_DLLEXPORT char* stest(char *x) {
     return x;
 }
 
-struct jl_asciistring_t { struct { void* type; char* data; } *data; };
-char* sptest(struct jl_asciistring_t str) {
+struct jl_string_t { struct { void* type; char* data; } *data; };
+char* sptest(struct jl_string_t str) {
     //Unpack an String
     return stest(str.data->data);
 }

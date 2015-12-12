@@ -477,7 +477,7 @@ extern JL_DLLEXPORT jl_datatype_t *jl_densearray_type;
 extern JL_DLLEXPORT jl_datatype_t *jl_array_type;
 extern JL_DLLEXPORT jl_typename_t *jl_array_typename;
 extern JL_DLLEXPORT jl_datatype_t *jl_weakref_type;
-extern JL_DLLEXPORT jl_datatype_t *jl_utf8_string_type;
+extern JL_DLLEXPORT jl_datatype_t *jl_string_type;
 extern JL_DLLEXPORT jl_datatype_t *jl_errorexception_type;
 extern JL_DLLEXPORT jl_datatype_t *jl_argumenterror_type;
 extern JL_DLLEXPORT jl_datatype_t *jl_loaderror_type;
@@ -857,7 +857,7 @@ static inline uint32_t jl_fielddesc_size(int8_t fielddesc_type)
 #define jl_is_task(v)        jl_typeis(v,jl_task_type)
 #define jl_is_func(v)        jl_typeis(v,jl_function_type)
 #define jl_is_function(v)    jl_is_func(v)
-#define jl_is_utf8_string(v) jl_typeis(v,jl_utf8_string_type)
+#define jl_is_utf8_string(v) jl_typeis(v,jl_string_type)
 #define jl_is_byte_string(v) jl_is_utf8_string(v)
 #define jl_is_cpointer(v)    jl_is_cpointer_type(jl_typeof(v))
 #define jl_is_pointer(v)     jl_is_cpointer_type(jl_typeof(v))
