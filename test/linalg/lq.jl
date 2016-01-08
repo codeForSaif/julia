@@ -6,7 +6,7 @@ using Base.Test
 using Base.LinAlg: BlasComplex, BlasFloat, BlasReal
 
 
-n = 6
+n = 10
 
 # Split n into 2 parts for tests needing two matrices
 n1 = div(n, 2)
@@ -49,7 +49,7 @@ debug && println("LQ decomposition")
                 @test_approx_eq q*full(q, thin = false)' eye(n)
                 @test_approx_eq l*q a
                 @test_approx_eq full(lqa) a
-                @test_approx_eq lqa\b qrfact(a)\b
+                @test_approx_eq_eps lqa\b qrfact(a)\b 5000ε
                 @test_approx_eq_eps a*(lqa\b) b 3000ε
                 @test_approx_eq_eps A_mul_Bc(eye(eltyb,size(q.factors,2)),q)*full(q, thin=false) eye(n) 5000ε
                 if eltya != Int
@@ -63,9 +63,9 @@ debug && println("LQ decomposition")
 debug && println("Matmul with LQ factorizations")
         lqa = lqfact(a[:,1:n1])
         l,q  = lqa[:L], lqa[:Q]
-        @test_approx_eq A_mul_B!(full(q)',q) eye(eltya,n)
+        @test full(q)*full(q)' ≈ eye(eltya,n1)
         @test_throws DimensionMismatch A_mul_B!(eye(eltya,n+1),q)
-        @test_approx_eq A_mul_Bc!(full(q),q) eye(eltya,n)
+        @test Ac_mul_B!(q,full(q)) ≈ eye(eltya,n1)
         @test_throws DimensionMismatch A_mul_Bc!(eye(eltya,n+1),q)
         @test_throws BoundsError size(q,-1)
     end

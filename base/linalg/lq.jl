@@ -53,10 +53,9 @@ size(A::LQPackedQ) = size(A, 1), size(A, 2)
 full(A::LQ) = A[:L]*A[:Q]
 function full{T}(A::LQPackedQ{T}; thin::Bool=true)
     if thin
-        println(size(A))
-        A_mul_B!(eye(T, minimum(size(A.factors)), size(A.factors,1)), A)
+        LAPACK.orglq!(copy(A.factors),A.τ)
     else
-        A_mul_B!(eye(T, size(A.factors,1)), A)
+        A_mul_B!(A, eye(T, size(A.factors,2)))
     end
 end
 
@@ -69,7 +68,7 @@ function *{TA,TB}(A::LQPackedQ{TA},B::StridedVecOrMat{TB})
 end
 
 ### QcB
-Ac_mul_B!{T<:BlasReal}(A::LQPackedQ{T}, B::StridedVecOrMat{T})    = LAPACK.ormlq!('L','T',A.factors.',A.τ,B)
+Ac_mul_B!{T<:BlasReal}(A::LQPackedQ{T}, B::StridedVecOrMat{T})    = LAPACK.ormlq!('L','T',A.factors,A.τ,B)
 Ac_mul_B!{T<:BlasComplex}(A::LQPackedQ{T}, B::StridedVecOrMat{T}) = LAPACK.ormlq!('L','C',A.factors,A.τ,B)
 function Ac_mul_B{TA,TB}(A::LQPackedQ{TA}, B::StridedVecOrMat{TB})
     TAB = promote_type(TA,TB)
@@ -104,7 +103,7 @@ function *{TA,TB}(A::StridedMatrix{TA},B::LQPackedQ{TB})
 end
 
 ### AQc
-A_mul_Bc!{T<:BlasReal}(A::StridedMatrix{T}, B::LQPackedQ{T})    = LAPACK.ormlq!('R','C',B.factors,B.τ,A)
+A_mul_Bc!{T<:BlasReal}(A::StridedMatrix{T}, B::LQPackedQ{T})    = LAPACK.ormlq!('R','T',B.factors,B.τ,A)
 A_mul_Bc!{T<:BlasComplex}(A::StridedMatrix{T}, B::LQPackedQ{T}) = LAPACK.ormlq!('R','C',B.factors,B.τ,A)
 function A_mul_Bc{TA<:Number,TB<:Number}( A::StridedVecOrMat{TA}, B::LQPackedQ{TB})
     TAB = promote_type(TA,TB)
@@ -127,7 +126,7 @@ function \{TA,Tb}(A::LQ{TA}, b::StridedVector{Tb})
     end
     return length(x) > n ? x[1:n] : x
 end
-#=function \{TA,TB}(A::LQ{TA},B::StridedMatrix{TB})
+function \{TA,TB}(A::LQ{TA},B::StridedMatrix{TB})
     S = promote_type(TA,TB)
     m,n = size(A)
     m == size(B,1) || throw(DimensionMismatch("left hand side has $m rows, but right hand side has $(size(B,1)) rows"))
@@ -138,17 +137,9 @@ end
         X = A_ldiv_B!(AA, copy_oftype(B, S))
     end
     return size(X, 1) > n ? X[1:n,:] : X
-end=#
-function \{TA,TB}(A::LQ{TA},B::StridedMatrix{TB})
-    S = promote_type(TA,TB)
-    m,n = size(A)
-    m == size(B,1) || throw(DimensionMismatch("left hand side has $m rows, but right hand side has $(size(B,1)) rows"))
-    X = A_ldiv_B!(A, copy(B))
-    return size(X, 1) > n ? X[1:n,:] : X
 end
 
 function A_ldiv_B!{T}(A::LQ{T}, B::StridedVecOrMat{T})
-    #Ac_mul_B!(A[:Q], sub(A_ldiv_B!(LowerTriangular(A[:L]),B), 1:size(A, 2)))
     Ac_mul_B!(A[:Q], A_ldiv_B!(LowerTriangular(A[:L]),B))
     return B
 end
