@@ -143,11 +143,12 @@ function \{TA,TB}(A::LQ{TA},B::StridedMatrix{TB})
     S = promote_type(TA,TB)
     m,n = size(A)
     m == size(B,1) || throw(DimensionMismatch("left hand side has $m rows, but right hand side has $(size(B,1)) rows"))
-    X = A_ldiv_B!(A, B)
+    X = A_ldiv_B!(A, copy(B))
     return size(X, 1) > n ? X[1:n,:] : X
 end
 
 function A_ldiv_B!{T}(A::LQ{T}, B::StridedVecOrMat{T})
-    Ac_mul_B!(A[:Q], sub(A_ldiv_B!(inv(LowerTriangular(A[:L])),B), 1:size(A, 2)))
+    #Ac_mul_B!(A[:Q], sub(A_ldiv_B!(LowerTriangular(A[:L]),B), 1:size(A, 2)))
+    Ac_mul_B!(A[:Q], A_ldiv_B!(LowerTriangular(A[:L]),B))
     return B
 end

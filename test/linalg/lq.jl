@@ -63,9 +63,9 @@ debug && println("LQ decomposition")
 debug && println("Matmul with LQ factorizations")
         lqa = lqfact(a[:,1:n1])
         l,q  = lqa[:L], lqa[:Q]
-        @test_approx_eq A_mul_B!(eye(eltya,n),q) full(q,thin=false)
+        @test_approx_eq A_mul_B!(full(q)',q) eye(eltya,n)
         @test_throws DimensionMismatch A_mul_B!(eye(eltya,n+1),q)
-        @test_approx_eq A_mul_Bc!(eye(eltya,n),q) full(q,thin=false)
+        @test_approx_eq A_mul_Bc!(full(q),q) eye(eltya,n)
         @test_throws DimensionMismatch A_mul_Bc!(eye(eltya,n+1),q)
         @test_throws BoundsError size(q,-1)
     end
