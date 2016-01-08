@@ -64,6 +64,7 @@ debug && println("Matmul with LQ factorizations")
         lqa = lqfact(a[:,1:n1])
         l,q  = lqa[:L], lqa[:Q]
         @test full(q)*full(q)' ≈ eye(eltya,n1)
+        @test (full(q,thin=false)'*full(q,thin=false))[1:n1,:] ≈ eye(eltya,n1,n)
         @test_throws DimensionMismatch A_mul_B!(eye(eltya,n+1),q)
         @test Ac_mul_B!(q,full(q)) ≈ eye(eltya,n1)
         @test_throws DimensionMismatch A_mul_Bc!(eye(eltya,n+1),q)

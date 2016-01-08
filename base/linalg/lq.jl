@@ -55,7 +55,7 @@ function full{T}(A::LQPackedQ{T}; thin::Bool=true)
     if thin
         LAPACK.orglq!(copy(A.factors),A.τ)
     else
-        A_mul_B!(A, eye(T, size(A.factors,2)))
+        A_mul_B!(A, eye(T, size(A.factors,2), size(A.factors,1)))
     end
 end
 
