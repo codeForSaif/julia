@@ -46,7 +46,7 @@ debug && println("LQ decomposition")
                 lqa   = lqfact(a)
                 l,q   = lqa[:L], lqa[:Q]
                 @test_throws KeyError lqa[:Z]
-                @test q*full(q, thin = false)' ≈ eye(n)
+                @test q*full(q, thin = false)' ≈ eye(eltya,n)
                 @test l*q ≈ a
                 @test full(lqa) ≈ a
                 @test_approx_eq_eps a*(lqa\b) b 3000ε
