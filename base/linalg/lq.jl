@@ -47,8 +47,8 @@ convert{T}(::Type{AbstractMatrix{T}}, Q::LQPackedQ) = convert(LQPackedQ{T}, Q)
 
 size(A::LQ, dim::Integer) = size(A.factors, dim)
 size(A::LQ) = size(A.factors)
-size(A::LQPackedQ, dim::Integer) = 0 < dim ? (dim <= 2 ? size(A.factors, 1) : 1) : throw(BoundsError())
-size(A::LQPackedQ) = size(A, 1), size(A, 2)
+size(A::LQPackedQ, dim::Integer) = 0 < dim ? (dim <= 2 ? size(A.factors, dim) : 1) : throw(BoundsError())
+size(A::LQPackedQ) = size(A.factors)
 
 full(A::LQ) = A[:L]*A[:Q]
 function full{T}(A::LQPackedQ{T}; thin::Bool=true)
